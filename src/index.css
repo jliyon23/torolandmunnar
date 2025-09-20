@@ -1,0 +1,41 @@
+@font-face{
+  font-family: Marcellus;
+  src: url("./assets/fonts/Marcellus-Regular.ttf");
+}
+
+@font-face{
+  font-family: Jost;
+  src: url("./assets/fonts/Jost-Regular.ttf");
+}
+
+@font-face {
+  font-family: JostThin;
+  src: url("./assets/fonts/Jost-Thin.ttf");
+}
+
+@font-face {
+  font-family: HomemadeApple;
+  src: url('./assets/fonts/HomemadeApple-Regular.ttf');
+}
+
+@import "tailwindcss";
+
+@theme{
+  --color-primary: #2D5016;     /* Dark Green */
+  --color-secondary: #6B8E23;   /* Olive Green */
+  --color-accent: #8FBC8F;      /* Light Green */
+  --color-background: #d5d9ce;  /* off white */
+  --color-text: #1A1A1A;        /* Dark Text */
+  --color-light: #F5F5F5;       /* Light Gray */
+  --font-primary: Marcellus, 'sans-serif';
+  --font-secondary: Jost, 'sans-serif';
+  --font-tertiary: HomemadeApple, 'sans-serif';
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
