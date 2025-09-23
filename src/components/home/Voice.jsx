@@ -1,30 +1,49 @@
 import { useState, useEffect, useRef } from "react";
-import { Quote, Star, Award, MessagesSquare } from "lucide-react";
+import { FaQuoteLeft, FaStar, FaAward, FaUsers } from "react-icons/fa";
 
 // --- Data for Testimonials ---
 const testimonialsData = [
   {
-    quote: "Everything here was great: the staff, the room layout, the property amenities with indoor pool, and the quality of the food. But the high point is the view from the mountains.",
+    quote: "Everything was great: the staff, the room, the amenities, and the food. But the high point is the breathtaking view from the mountains.",
     author: "Anna Williams",
     source: "TripAdvisor",
     rating: 5
   },
   {
-    quote: "Toroland offers an unparalleled escape into nature without compromising on luxury. The eco-friendly approach combined with modern comforts made our stay unforgettable.",
+    quote: "An unparalleled escape into nature without compromising on luxury. The eco-friendly approach is something truly special. Unforgettable.",
     author: "Michael Chen",
     source: "Google Reviews",
     rating: 5
   },
   {
-    quote: "The perfect blend of sustainability and luxury. Waking up to the misty mountains while knowing you're in an eco-conscious resort is a rare and precious experience.",
+    quote: "The perfect blend of sustainability and luxury. Waking up to the misty mountains while knowing you're in an eco-conscious resort is a rare experience.",
     author: "Sarah Johnson",
     source: "Booking.com",
     rating: 5
   }
 ];
 
+// --- Data for Social Proof ---
+const socialProofData = [
+    {
+        icon: <FaStar size={24}/>,
+        title: "4.9/5 Rating",
+        subtitle: "From 200+ Reviews"
+    },
+    {
+        icon: <FaUsers size={24}/>,
+        title: "1,200+ Guests",
+        subtitle: "Hosted in the last year"
+    },
+    {
+        icon: <FaAward size={24}/>,
+        title: "Eco Award 2024",
+        subtitle: "For Sustainable Tourism"
+    }
+]
+
 // --- Custom Hook for Intersection Observer ---
-const useOnScreen = (ref, threshold = 0.3) => {
+const useOnScreen = (ref, threshold = 0.2) => {
   const [isIntersecting, setIntersecting] = useState(false);
 
   useEffect(() => {
@@ -33,128 +52,89 @@ const useOnScreen = (ref, threshold = 0.3) => {
       { threshold }
     );
     const currentRef = ref.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
+    if (currentRef) observer.observe(currentRef);
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
+      if (currentRef) observer.unobserve(currentRef);
     };
   }, [ref, threshold]);
 
   return isIntersecting;
 };
 
-export default function Testimonials() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  
+
+const Testimonials = () => {
   const sectionRef = useRef(null);
   const isVisible = useOnScreen(sectionRef);
 
-  // CORRECTED: Function name fixed to use camelCase
-  const handleTestimonialChange = (index) => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentIndex(index);
-      setIsTransitioning(false);
-    }, 300); // Duration of the fade-out transition
-  };
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const nextIndex = (currentIndex + 1) % testimonialsData.length;
-      // CORRECTED: Call the fixed function name
-      handleTestimonialChange(nextIndex);
-    }, 6000); // Auto-rotate every 6 seconds
-
-    return () => clearInterval(interval);
-  }, [currentIndex]);
-
-  const activeTestimonial = testimonialsData[currentIndex];
-
   return (
-    <section
-      id="testimonials-section"
-      ref={sectionRef}
-      className="relative py-24 bg-cover bg-center bg-fixed"
-      style={{ backgroundImage: "url('https://res.cloudinary.com/dlgdmu6gq/image/upload/f_auto,q_auto/v1756795607/5_uvx5wt.jpg')" }}
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-
-      {/* Content */}
-      <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className={`mb-12 transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <p className="uppercase tracking-widest text-sm font-semibold text-accent mb-2 font-secondary">
-            Voice from our guests
-          </p>
-          <h2 className="text-4xl md:text-5xl font-primary text-white">
-            Guest Experiences
-          </h2>
-          <div className="w-20 h-[1px] bg-accent mx-auto mt-4"></div>
-        </div>
-
-        {/* Testimonial Carousel */}
-        <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
-          <Quote className="text-accent mx-auto mb-4" size={40} />
-          <blockquote className="text-xl md:text-2xl font-light max-w-3xl mx-auto font-secondary leading-relaxed">
-            {activeTestimonial.quote}
-          </blockquote>
-          <div className="mt-8">
-            <p className="font-semibold text-lg tracking-wide font-primary">
-              {activeTestimonial.author}
-            </p>
-            <p className="text-gray-300 text-sm mt-1">
-              – {activeTestimonial.source}
-            </p>
-          </div>
-          <div className="flex justify-center mt-4 space-x-1 text-accent">
-            {[...Array(activeTestimonial.rating)].map((_, i) => (
-              <Star key={i} className="w-5 h-5 fill-current" />
-            ))}
-          </div>
-        </div>
-
-        {/* Navigation Dots */}
-        <div className="flex justify-center mt-10 space-x-2">
-          {testimonialsData.map((_, index) => (
-            <button
-              key={index}
-              // CORRECTED: Call the fixed function name
-              onClick={() => handleTestimonialChange(index)}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                index === currentIndex ? 'bg-accent w-6' : 'bg-white/30 hover:bg-white/50'
-              }`}
-              aria-label={`View testimonial ${index + 1}`}
-            />
-          ))}
-        </div>
+    <section ref={sectionRef} id="testimonials" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-background">
+      <div className="max-w-7xl mx-auto">
         
-        {/* Divider */}
-        <div className="w-full max-w-xs mx-auto h-[1px] bg-white/20 my-12"></div>
+        {/* Section Header */}
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-20">
+          {/* Left Column */}
+          <div className={`transition-all duration-700 transform ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`}>
+            <p className="font-secondary text-secondary tracking-widest uppercase mb-2">
+              Testimonials
+            </p>
+            <h2 className="text-4xl md:text-5xl font-primary text-primary">
+              What Our Guests Say
+            </h2>
+            <div className="w-24 h-[2px] bg-secondary mt-4"></div>
+          </div>
 
-        {/* Social Proof Badges */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-white/90">
-            <div className="flex flex-col items-center">
-                <Star className="w-8 h-8 mb-2 text-accent"/>
-                <span className="font-bold text-lg font-primary">4.9/5 Rating</span>
-                <span className="text-sm text-white/70">Based on guest reviews</span>
+          {/* Right Column with Social Proof */}
+          <div className={`transition-all duration-700 delay-200 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <p className="text-main-text/80 font-secondary text-lg leading-relaxed mb-8">
+              Our guests consistently praise our unique blend of serene nature, sustainable luxury, and heartfelt hospitality. Here are a few of their experiences.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                {socialProofData.map((item, index) => (
+                    <div key={index}>
+                        <div className="text-secondary mx-auto w-12 h-12 flex items-center justify-center">{item.icon}</div>
+                        <h4 className="font-primary text-primary text-xl mt-2">{item.title}</h4>
+                        <p className="font-secondary text-main-text/70 text-sm">{item.subtitle}</p>
+                    </div>
+                ))}
             </div>
-            <div className="flex flex-col items-center">
-                <MessagesSquare className="w-8 h-8 mb-2 text-accent"/>
-                <span className="font-bold text-lg font-primary">200+ Reviews</span>
-                <span className="text-sm text-white/70">Across all platforms</span>
+          </div>
+        </div>
+
+        {/* Testimonials Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {testimonialsData.map((testimonial, index) => (
+            <div
+              key={index}
+              className={`bg-light p-8 shadow-lg flex flex-col transition-all duration-500 transform hover:shadow-2xl hover:-translate-y-2 ${
+                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+              }`}
+              style={{ transitionDelay: `${index * 150}ms` }}
+            >
+              <FaQuoteLeft className="text-secondary/50 mb-6" size={32} />
+              <p className="font-secondary text-main-text/90 leading-relaxed flex-grow">
+                "{testimonial.quote}"
+              </p>
+              <div className="mt-6 pt-6 border-t border-secondary/10">
+                <h4 className="font-primary text-primary text-lg">
+                  {testimonial.author}
+                </h4>
+                <div className="flex items-center mt-2">
+                  <div className="flex text-secondary">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <FaStar key={i} className="w-4 h-4" />
+                    ))}
+                  </div>
+                  <p className="ml-3 font-secondary text-main-text/60 text-sm">
+                    via {testimonial.source}
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col items-center">
-                <Award className="w-8 h-8 mb-2 text-accent"/>
-                <span className="font-bold text-lg font-primary">Eco Award 2023</span>
-                <span className="text-sm text-white/70">For sustainable tourism</span>
-            </div>
+          ))}
         </div>
       </div>
     </section>
   );
-}
+};
+
+export default Testimonials;

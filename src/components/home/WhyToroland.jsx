@@ -1,137 +1,143 @@
 import { useState, useEffect, useRef } from "react";
+import { 
+  FaLeaf, 
+  FaMountain, 
+  FaHeart,
+  FaWifi,
+  FaStar,
+  FaParking
+} from "react-icons/fa";
 
-// --- Data ---
-// Using thin-line icons for a more elegant and minimal look.
-const amenities = [
+// --- Data: No changes needed here ---
+const featuresData = [
   {
-    icon: "https://cdn-icons-png.flaticon.com/512/3201/3201597.png",
-    name: "Airport Pick-up Service",
-    description: "Seamless and complimentary transport from the airport.",
+    icon: <FaLeaf size={28} />,
+    title: "Eco-Conscious Luxury",
+    description: "Experience premium comfort with sustainable practices that protect the natural beauty of Munnar."
   },
   {
-    icon: "https://cdn-icons-png.flaticon.com/512/8177/8177953.png",
-    name: "High-Speed Wi-Fi",
-    description: "Stay connected with free high-speed internet across the resort.",
+    icon: <FaMountain size={28} />,
+    title: "Nature Immersion",
+    description: "Our resort is a sanctuary, perfectly integrated with the stunning landscapes of the Western Ghats."
   },
   {
-    icon: "https://cdn-icons-png.flaticon.com/512/3593/3593531.png",
-    name: "Housekeeper Services",
-    description: "Daily cleaning to ensure a pristine and comfortable space.",
+    icon: <FaHeart size={28} />,
+    title: "Personalized Care",
+    description: "Born from a family's dream, we provide attentive, heartfelt service to make every stay unforgettable."
   },
   {
-    icon: "https://cdn-icons-png.flaticon.com/512/1054/1054949.png",
-    name: "Laundry Services",
-    description: "On-demand laundry and dry cleaning for your convenience.",
+    icon: <FaWifi size={28} />,
+    title: "High-Speed Wi-Fi",
+    description: "Stay connected with complimentary high-speed internet access available throughout the entire resort."
   },
   {
-    icon: "https://cdn-icons-png.flaticon.com/512/2965/2965377.png",
-    name: "Breakfast in Bed",
-    description: "Enjoy a delicious, freshly prepared breakfast in your room.",
+    icon: <FaStar size={28} />,
+    title: "Impeccable Housekeeping",
+    description: "Our dedicated team provides daily services to ensure your space remains pristine and comfortable."
   },
   {
-    icon: "https://cdn-icons-png.flaticon.com/512/7543/7543949.png",
-    name: "Parking Facility",
-    description: "Complimentary and secure on-site parking for all our guests.",
-  },
+    icon: <FaParking size={28} />,
+    title: "Secure On-Site Parking",
+    description: "Enjoy peace of mind with our complimentary and secure parking facilities for all our guests."
+  }
 ];
 
-// --- Custom Hook for Intersection Observer ---
-const useInView = (options) => {
-  const ref = useRef(null);
-  const [isInView, setIsInView] = useState(false);
+// --- Custom Hook: No changes needed ---
+const useOnScreen = (ref, threshold = 0.2) => {
+  const [isIntersecting, setIntersecting] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIsInView(true);
-        observer.unobserve(entry.target);
-      }
-    }, options);
-
+    const observer = new IntersectionObserver(
+      ([entry]) => setIntersecting(entry.isIntersecting),
+      { threshold }
+    );
     const currentRef = ref.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
+    if (currentRef) observer.observe(currentRef);
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
+      if (currentRef) observer.unobserve(currentRef);
     };
-  }, [ref, options]);
+  }, [ref, threshold]);
 
-  return [ref, isInView];
+  return isIntersecting;
 };
 
-// --- Component ---
+
 const WhyToroland = () => {
-  const [sectionRef, isVisible] = useInView({ threshold: 0.15 });
-  
-  // Base class for fade-in-up animation
-  const animationClass = `transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`;
+  const sectionRef = useRef(null);
+  const isVisible = useOnScreen(sectionRef);
 
   return (
-    <section ref={sectionRef} className="bg-white py-20 sm:py-24">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={sectionRef} id="why-us" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-background">
+      <div className="max-w-7xl mx-auto">
         
-        {/* Header and Story */}
-        <div className={`max-w-3xl mx-auto text-center mb-16 ${animationClass}`}>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-            The Story of Toroland
-          </h2>
-          <div className="w-24 h-1 bg-amber-500 mx-auto mt-4 mb-6"></div>
-          <p className="text-lg text-gray-600 leading-relaxed">
-            Toroland is born from a shared dream of two brothers, Tony and Rojan.
-            Our vision was to create a sanctuary where luxury coexists with nature, not at its expense.
-            Environmental sustainability is the soul of our retreat, ensuring your stay is both unforgettable and kind to the earth.
-          </p>
+        {/* Section Header */}
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-16 sm:mb-20">
+          <div className={`transition-all duration-700 transform ${isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`}>
+            <p className="font-secondary text-secondary tracking-widest uppercase mb-2">
+              Our Commitment
+            </p>
+            <h2 className="text-4xl md:text-5xl font-primary text-primary">
+              A Sanctuary of Care
+            </h2>
+            <div className="w-24 h-[2px] bg-secondary mt-4"></div>
+          </div>
+          <div className={`transition-all duration-700 delay-200 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <p className="text-main-text/80 font-secondary text-lg leading-relaxed">
+              Toroland is born from a shared dream: to create a sanctuary where luxury coexists with nature, not at its expense. Our vision ensures your stay is both unforgettable and kind to the earth.
+            </p>
+          </div>
         </div>
 
-        {/* Main Content: Image and Amenities */}
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          
-          {/* Left Column: Image with animation */}
-          <div className={`transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-            <img
-              src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1925&auto=format&fit=crop"
-              alt="Serene poolside view at Toroland Resort in Munnar"
-              className="w-full h-full object-cover rounded-xl shadow-lg"
-            />
+        {/* Main Content: 1 column on mobile, 2 columns on desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
+          {/* ====== IMAGE COLUMN ====== */}
+          {/* FIX 1: This entire column is now hidden on mobile (<lg) to prevent excessive scrolling */}
+          <div className={`hidden lg:block transition-opacity duration-1000 delay-300 ${
+            isVisible ? 'opacity-100' : 'opacity-0'
+          }`}>
+            <div className="overflow-hidden shadow-lg h-full">
+              <img
+                // FIX 2: Using a portrait-style image URL (aspect ratio 3:4)
+                src="https://res.cloudinary.com/dlgdmu6gq/image/upload/w_600,ar_3:4,c_fill,g_auto,f_auto,q_auto/v1756913001/local_amenities_3_bymxit.jpg"
+                alt="A cozy, well-lit room at Toroland Resort"
+                // FIX 3: h-full makes the image stretch to the height of the right-side content
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
 
-          {/* Right Column: Amenities with staggered animation */}
+          {/* ====== FEATURES COLUMN ====== */}
+          {/* This column is now full-width on mobile, and the second column on desktop */}
           <div>
-            <h3 className="text-2xl font-semibold text-gray-800 mb-8 text-center sm:text-left">
-              Our Signature Amenities
+            <h3 className={`text-2xl md:text-3xl font-primary text-primary mb-8 transition-all duration-700 transform ${
+                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+              }`}
+              style={{ transitionDelay: `200ms` }}
+            >
+              Why Guests Choose Us
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {amenities.map((amenity, index) => (
+            <div className="grid grid-cols-2 gap-4 sm:gap-6">
+              {featuresData.map((feature, index) => (
                 <div
-                  key={amenity.name}
-                  className={`flex items-start p-4 bg-gray-50/80 rounded-lg ${animationClass}`}
-                  // BUG FIX: Apply dynamic delays using inline styles
-                  style={{ transitionDelay: `${150 + index * 100}ms` }}
+                  key={index}
+                  className={`bg-light p-6 text-center shadow-lg transition-all duration-500 transform hover:shadow-2xl hover:-translate-y-2 ${
+                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                  }`}
+                  style={{ transitionDelay: `${index * 100 + 400}ms` }}
                 >
-                  <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center mr-4">
-                    <img
-                      src={amenity.icon}
-                      alt={`${amenity.name} icon`}
-                      className="w-full h-full object-contain"
-                    />
+                  <div className="w-16 h-16 bg-secondary/10 text-secondary flex items-center justify-center mx-auto mb-4">
+                    {feature.icon}
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-800">
-                      {amenity.name}
-                    </h4>
-                    <p className="text-gray-600 text-sm">
-                      {amenity.description}
-                    </p>
-                  </div>
+                  <h4 className="text-lg font-primary text-primary mb-2">
+                    {feature.title}
+                  </h4>
+                  <p className="text-main-text/80 font-secondary text-sm leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
-          
         </div>
       </div>
     </section>
