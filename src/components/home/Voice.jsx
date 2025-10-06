@@ -50,7 +50,7 @@ const socialProofData = [
     },
     {
         icon: <FaAward size={24}/>,
-        title: "Eco Award 2024",
+        title: "Award if any..",
         subtitle: "For Sustainable Tourism"
     }
 ]
@@ -80,7 +80,7 @@ const Testimonials = () => {
   const isVisible = useOnScreen(sectionRef);
 
   return (
-    <section ref={sectionRef} id="testimonials" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-background">
+    <section ref={sectionRef} id="testimonials" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-light">
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header */}
@@ -118,7 +118,7 @@ const Testimonials = () => {
           {testimonialsData.map((testimonial, index) => (
             <div
               key={index}
-              className={`bg-light p-8 shadow-lg flex flex-col transition-all duration-500 transform hover:shadow-2xl hover:-translate-y-2 ${
+              className={`bg-background p-8 shadow-lg flex flex-col transition-all duration-500 transform hover:shadow-2xl hover:-translate-y-2 ${
                 isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`}
               style={{ transitionDelay: `${index * 150}ms` }}

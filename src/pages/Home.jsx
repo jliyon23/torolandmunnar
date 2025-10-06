@@ -1,4 +1,5 @@
 import About from "../components/home/About"
+import Activities from "../components/home/Activities"
 import BlogSection from "../components/home/BlogSection"
 import Experiences from "../components/home/Experiences"
 import Hero from "../components/home/Hero"
@@ -18,6 +19,7 @@ function Home() {
             <WhyToroland />
             <Rooms />
             <Experiences />
+            <Activities />
             <BlogSection />
             <Voice />
             <Newsletter />

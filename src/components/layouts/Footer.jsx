@@ -102,7 +102,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-main-text/10 text-center">
           <p className="text-xs text-main-text/60">
-            © {new Date().getFullYear()} Toroland Sanctuary. All Rights Reserved.
+            © {new Date().getFullYear()} Toroland Munnar. All Rights Reserved.
           </p>
         </div>
       </div>

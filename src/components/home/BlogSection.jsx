@@ -54,7 +54,7 @@ const BlogSection = () => {
   const isVisible = useOnScreen(sectionRef);
 
   return (
-    <section ref={sectionRef} id="blog" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-light">
+    <section ref={sectionRef} id="blog" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-background">
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header (No changes) */}
@@ -83,7 +83,7 @@ const BlogSection = () => {
             <a
               key={post.id}
               href={`/blog/${post.id}`}
-              className={`group block bg-background shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
+              className={`group block bg-light shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
                 isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`}
               style={{ transitionDelay: `${index * 150}ms` }}

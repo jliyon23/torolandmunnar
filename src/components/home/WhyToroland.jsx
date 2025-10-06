@@ -116,7 +116,7 @@ const WhyToroland = () => {
             >
               Why Guests Choose Us
             </h3>
-            <div className="grid grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 gap-2 sm:gap-2">
               {featuresData.map((feature, index) => (
                 <div
                   key={index}
