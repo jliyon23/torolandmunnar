@@ -48,39 +48,58 @@ function About() {
   return (
     <section id="about" className="bg-background py-16">
       {/* 1. CONTAINER FOR CENTERED TEXT CONTENT */}
-      <div className="max-w-3xl mx-auto text-center px-4 mb-12">
-        <img src={logo} className="w-28 mx-auto mb-6" alt="Toroland Munnar Logo" />
-        <h1 className="text-3xl font-bold font-primary text-primary mb-2">
-          TOROLAND MUNNAR
-        </h1>
-        <p className="text-lg text-secondary font-secondary mb-1">
-          ENVOYS OF ECO MAKERS
-        </p>
-        <div className="w-28 h-[0.1px] bg-amber-500 mx-auto mb-8"></div>
-        <div className="space-y-3 mb-10 font-secondary">
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
-            <div className="flex items-center">
-              <Phone className="text-amber-500 mr-2" size={18} />
-              <p className="text-gray-700">+91 1234567890</p>
-            </div>
-            <div className="flex items-center">
-              <Mail className="text-amber-500 mr-2" size={18} />
-              <p className="text-gray-700">info@torolandmunnar.com</p>
-            </div>
-          </div>
-          <div className="flex justify-center items-center">
-            <MapPin className="text-amber-500 mr-2" size={18} />
-            <p className="text-gray-700 font-secondary">
-              Viripara, Mankulam, Opp Tiger Cave, Munnar
-            </p>
-          </div>
-        </div>
-        <div className="space-y-4 mb-18 text-secondary font-secondary text-center sm:text-center">
-          <p>
-            Toroland blends the architectural heritage of the Western Ghats with the sophistication of modern luxury, creating a retreat that balances tradition and sustainability. We are committed to responsible tourism, where guests can experience authentic culture while preserving the beauty of Munnar for future generations.
-          </p>
-        </div>
+      <div className="max-w-3xl mx-auto text-center px-4 my-16 sm:my-20">
+      {/* Logo */}
+      <img
+        src={logo}
+        className="w-24 sm:w-28 mx-auto mb-6"
+        alt="Toroland Munnar Logo"
+      />
+
+      {/* Main Heading */}
+      <h1 className="text-3xl sm:text-4xl font-primary font-bold text-gray-900 tracking-tight">
+        TOROLAND MUNNAR
+      </h1>
+      <p className="mt-2 text-lg text-primary tracking-wide">
+        ENVOYS OF ECO MAKERS
+      </p>
+
+      {/* Divider */}
+      <div className="w-24 h-px bg-amber-500 mx-auto mt-6 mb-8"></div>
+
+      {/* Contact Information */}
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-x-6 gap-y-3 mb-4 text-gray-700">
+        <a
+          href="tel:+911234567890"
+          className="flex items-center hover:text-amber-600 transition-colors"
+        >
+          <Phone className="mr-2" size={16} />
+          <span>+91 1234567890</span>
+        </a>
+        <a
+          href="mailto:info@torolandmunnar.com"
+          className="flex items-center hover:text-amber-600 transition-colors"
+        >
+          <Mail className="mr-2" size={16} />
+          <span>info@torolandmunnar.com</span>
+        </a>
       </div>
+      <div className="flex justify-center items-center text-gray-700">
+        <MapPin className="mr-2 flex-shrink-0" size={16} />
+        <p>Viripara, Mankulam, Opp Tiger Cave, Munnar</p>
+      </div>
+      
+      {/* Brand Story/Mission */}
+      <div className="mt-12 text-secondary text-xl font-tertiary leading-relaxed border-t border-gray-200 pt-8">
+        <p>
+          "Toroland blends the architectural heritage of the Western Ghats with
+          the sophistication of modern luxury. We are committed to responsible
+          tourism, creating a sustainable retreat where guests can experience
+          authentic culture while preserving the breathtaking beauty of Munnar for
+          generations to come."
+        </p>
+      </div>
+    </div>
 
       {/* 2. FULL-WIDTH CONTAINER FOR THE GALLERY */}
       <div className="w-full relative">

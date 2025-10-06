@@ -4,29 +4,22 @@ import { ArrowRight, Ruler, Users, BedDouble } from "lucide-react";
 // --- Data ---
 const roomData = [
   {
-    title: "Eco Suite",
-    description: "Inspired by the traditional architecture of the Western Ghats, featuring modern comforts for an extraordinary experience.",
-    size: "60 m²",
+    title: "Cave Suite",
+    description: "The suite features air conditioning, soundproof walls, a balcony with mountain views as well as a private bathroom boasting a shower. The unit has 1 bed.",
+    size: "50 m²",
     guests: "2 Guests",
-    bed: "1 Queen Size Bed",
+    bed: "1 Large Double Bed",
     image: "https://res.cloudinary.com/dlgdmu6gq/image/upload/w_800,ar_4:3,c_fill,f_auto,q_auto/v1756798653/_DSC2821_1_mtwrwr.jpg"
   },
   {
     title: "Thatch Suite",
-    description: "Constructed with sustainable materials, offering a perfect blend of rustic charm and contemporary luxury.",
-    size: "60 m²",
+    description: "The air-conditioned suite features 1 bedroom and 1 bathroom with a shower and a hairdryer. The suite has soundproof walls, a minibar, a wardrobe as well as a balcony with mountain views. The unit offers 1 bed.",
+    size: "48 m²",
     guests: "2 Guests",
-    bed: "1 Queen Size Bed",
+    bed: "1 Large Double Bed",
     image: "https://res.cloudinary.com/dlgdmu6gq/image/upload/w_800,ar_4:3,c_fill,f_auto,q_auto/v1756795607/5_uvx5wt.jpg"
   },
-  {
-    title: "Deluxe Room",
-    description: "A cozy retreat with elegant interiors and a private balcony overlooking the serene natural landscape.",
-    size: "55 m²",
-    guests: "2 Guests",
-    bed: "1 King Size Bed",
-    image: "https://res.cloudinary.com/dlgdmu6gq/image/upload/w_800,ar_4:3,c_fill,f_auto,q_auto/v1756795601/3_xcefgp.jpg"
-  }
+ 
 ];
 
 // --- Custom Hook for Intersection Observer ---
@@ -78,7 +71,7 @@ const Rooms = () => {
         </div>
 
         {/* Rooms Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2  gap-8">
           {roomData.map((room, index) => (
             // MODIFIED: Added transition classes and staggered delay style
             <div 

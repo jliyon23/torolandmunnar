@@ -4,24 +4,37 @@ import { FaQuoteLeft, FaStar, FaAward, FaUsers } from "react-icons/fa";
 // --- Data for Testimonials ---
 const testimonialsData = [
   {
-    quote: "Everything was great: the staff, the room, the amenities, and the food. But the high point is the breathtaking view from the mountains.",
-    author: "Anna Williams",
+    quote: "The place is very peaceful, clean and close to nature. Staff are friendly and the food is really tasty.",
+    author: "Ramesh Kumar",
+    source: "MakeMyTrip",
+    rating: 5
+  },
+  {
+    quote: "Great staff and awesome breakfast. Loved the trekking around the hotel — an amazing experience overall.",
+    author: "Emily Davis",
+    source: "Agoda",
+    rating: 5
+  },
+  {
+    quote: "Unique cave-style rooms, clean and cozy. The location is fantastic, surrounded by greenery and hills.",
+    author: "Shreya Menon",
+    source: "Booking.com",
+    rating: 4
+  },
+  {
+    quote: "Amazing experience. Hospitality is excellent, rooms are neat, and the natural beauty around is breathtaking.",
+    author: "John Matthew",
     source: "TripAdvisor",
     rating: 5
   },
   {
-    quote: "An unparalleled escape into nature without compromising on luxury. The eco-friendly approach is something truly special. Unforgettable.",
-    author: "Michael Chen",
-    source: "Google Reviews",
-    rating: 5
-  },
-  {
-    quote: "The perfect blend of sustainability and luxury. Waking up to the misty mountains while knowing you're in an eco-conscious resort is a rare experience.",
-    author: "Sarah Johnson",
-    source: "Booking.com",
+    quote: "Perfect place for a weekend getaway. Peaceful, eco-friendly and away from the city noise. Totally loved it.",
+    author: "Nikhil Raj",
+    source: "Goibibo",
     rating: 5
   }
 ];
+
 
 // --- Data for Social Proof ---
 const socialProofData = [

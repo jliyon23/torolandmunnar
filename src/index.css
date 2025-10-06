@@ -18,6 +18,11 @@
   src: url('./assets/fonts/HomemadeApple-Regular.ttf');
 }
 
+@font-face {
+  font-family: Satisfy;
+  src: url('./assets/fonts/Satisfy-Regular.ttf');
+}
+
 @import "tailwindcss";
 
 @theme{
@@ -29,7 +34,7 @@
   --color-light: #F5F5F5;       /* Light Gray */
   --font-primary: Marcellus, 'sans-serif';
   --font-secondary: Jost, 'sans-serif';
-  --font-tertiary: HomemadeApple, 'sans-serif';
+  --font-tertiary: Satisfy, 'sans-serif';
 }
 
 .no-scrollbar::-webkit-scrollbar {

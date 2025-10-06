@@ -67,7 +67,7 @@ const WhyToroland = () => {
   const isVisible = useOnScreen(sectionRef);
 
   return (
-    <section ref={sectionRef} id="why-us" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-background">
+    <section ref={sectionRef} id="why-us" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-light">
       <div className="max-w-7xl mx-auto">
         
         {/* Section Header */}
@@ -120,20 +120,23 @@ const WhyToroland = () => {
               {featuresData.map((feature, index) => (
                 <div
                   key={index}
-                  className={`bg-light p-6 text-center shadow-lg transition-all duration-500 transform hover:shadow-2xl hover:-translate-y-2 ${
+                  className={` flex gap-4 p-6 text-center  transition-all duration-500 transform  ${
                     isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
                   }`}
                   style={{ transitionDelay: `${index * 100 + 400}ms` }}
                 >
-                  <div className="w-16 h-16 bg-secondary/10 text-secondary flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16  text-secondary flex items-center justify-center mx-auto mb-4">
                     {feature.icon}
                   </div>
-                  <h4 className="text-lg font-primary text-primary mb-2">
+                  <div>
+                    <h4 className="text-lg text-left font-primary text-primary mb-2">
                     {feature.title}
                   </h4>
-                  <p className="text-main-text/80 font-secondary text-sm leading-relaxed">
+                  <p className="text-main-text/80 font-secondary text-left text-sm leading-relaxed">
                     {feature.description}
                   </p>
+                  </div>
+                  
                 </div>
               ))}
             </div>
