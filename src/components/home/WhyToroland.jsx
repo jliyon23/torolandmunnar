@@ -132,7 +132,7 @@ const WhyToroland = () => {
                     <h4 className="text-lg text-left font-primary text-primary mb-2">
                     {feature.title}
                   </h4>
-                  <p className="text-main-text/80 font-secondary text-left text-sm leading-relaxed">
+                  <p className="text-main-text/80 hidden md:block font-secondary text-left text-sm leading-relaxed">
                     {feature.description}
                   </p>
                   </div>
