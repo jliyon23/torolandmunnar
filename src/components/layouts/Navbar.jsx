@@ -88,6 +88,43 @@ const Navbar = () => {
           >
             GALLERY
           </NavLink>
+          
+          {/* More Dropdown */}
+          <div className="relative group">
+            <button className={`flex items-center gap-1 transition-colors ${isScrolled ? 'text-black hover:text-amber-600' : 'text-white hover:text-amber-300'}`}>
+              MORE
+              <svg className="w-4 h-4 transform group-hover:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            {/* Dropdown Menu */}
+            <div className={`absolute top-full left-0 mt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 ${
+              isScrolled ? 'bg-white shadow-xl border border-gray-200' : 'bg-black/90 backdrop-blur-md'
+            }`}>
+              <NavLink 
+                to="/activities" 
+                className={({ isActive }) => 
+                  `block px-6 py-3 transition-colors ${isScrolled ? 'text-black hover:text-amber-600 hover:bg-gray-50' : 'text-white hover:text-amber-300 hover:bg-white/10'} ${
+                    isActive ? (isScrolled ? "text-amber-700 bg-gray-50" : "text-amber-400 bg-white/10") : ""
+                  }`
+                }
+              >
+                ACTIVITIES
+              </NavLink>
+              <NavLink 
+                to="/blogs" 
+                className={({ isActive }) => 
+                  `block px-6 py-3 transition-colors ${isScrolled ? 'text-black hover:text-amber-600 hover:bg-gray-50' : 'text-white hover:text-amber-300 hover:bg-white/10'} ${
+                    isActive ? (isScrolled ? "text-amber-700 bg-gray-50" : "text-amber-400 bg-white/10") : ""
+                  }`
+                }
+              >
+                BLOGS
+              </NavLink>
+            </div>
+          </div>
+          
           <NavLink 
             to="/contact" 
             className={({ isActive }) => 
@@ -189,6 +226,28 @@ const Navbar = () => {
                   }
                 >
                   GALLERY
+                </NavLink>
+              </li>
+              <li className="flex items-center justify-center">
+                <NavLink 
+                  to="/activities" 
+                  onClick={handleNavClick}
+                  className={({ isActive }) => 
+                    `py-5 px-8 w-full hover:text-amber-300 transition-colors ${isActive ? "text-amber-400" : ""}`
+                  }
+                >
+                  ACTIVITIES
+                </NavLink>
+              </li>
+              <li className="flex items-center justify-center">
+                <NavLink 
+                  to="/blogs" 
+                  onClick={handleNavClick}
+                  className={({ isActive }) => 
+                    `py-5 px-8 w-full hover:text-amber-300 transition-colors ${isActive ? "text-amber-400" : ""}`
+                  }
+                >
+                  BLOGS
                 </NavLink>
               </li>
               <li className="flex items-center justify-center">
