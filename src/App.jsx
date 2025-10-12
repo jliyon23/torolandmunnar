@@ -9,11 +9,13 @@ import Contact from './pages/Contact'
 import Blogs from './pages/Blogs'
 import Activities from './pages/Activities'
 import EnquiryPage from './pages/EnquiryPage'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
 
   return (
     <>
+      <ScrollToTop />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/about' element={<About />} />
