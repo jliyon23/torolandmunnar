@@ -27,10 +27,10 @@ const Newsletter = () => {
   return (
     <section 
       className="relative bg-cover bg-center py-20 sm:py-24" 
-      style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534237683994-06d42133a8e2?q=80&w=2070&auto=format&fit=crop')" }}
+      style={{ backgroundImage: "url('https://res.cloudinary.com/dlgdmu6gq/image/upload/w_800,ar_4:3,c_fill,f_auto,q_auto/v1756798653/_DSC2821_1_mtwrwr.jpg')" }}
     >
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/60"></div>
+      <div className="absolute inset-0 bg-black/40"></div>
       
       {/* Content */}
       <div className="relative container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-10">
@@ -75,3 +75,4 @@ const Newsletter = () => {
 };
 
 export default Newsletter;
+
