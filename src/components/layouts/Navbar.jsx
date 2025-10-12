@@ -139,23 +139,23 @@ const Navbar = () => {
 
         {/* Right - Enquiry Button (hidden on mobile) */}
         <div className="hidden md:flex items-center space-x-6">
-          <button className={`border font-medium font-secondary tracking-wider transition rounded-none px-4 py-2 ${
+          <NavLink to={"/enquire"} className={`border font-medium font-secondary tracking-wider transition rounded-none px-4 py-2 ${
             isScrolled 
               ? 'border-amber-600 text-amber-700 hover:bg-amber-600 hover:text-white' 
               : 'border-white text-white hover:bg-white hover:text-black'
           }`}>
             ENQUIRY NOW
-          </button>
+          </NavLink>
         </div>
 
         {/* Mobile Enquiry Button (visible only on mobile) */}
-        <button className={`md:hidden border text-sm font-medium font-secondary tracking-wider transition rounded-none px-3 py-1 ${
+        <NavLink to={"/enquire"} className={`md:hidden border text-sm font-medium font-secondary tracking-wider transition rounded-none px-3 py-1 ${
           isScrolled 
             ? 'border-amber-600 text-amber-700 hover:bg-amber-600 hover:text-white' 
             : 'border-white text-white hover:bg-white hover:text-black'
         }`}>
           ENQUIRE
-        </button>
+        </NavLink>
       </nav>
 
       {/* Fullscreen Menu Overlay for Mobile */}
@@ -262,9 +262,9 @@ const Navbar = () => {
                 </NavLink>
               </li>
               <li className="flex items-center justify-center mt-6">
-                <button className="border-2 border-white text-white px-8 py-3 text-xl font-medium font-secondary tracking-wider hover:bg-white hover:text-black transition rounded-none">
+                <NavLink to={"/enquire"} className="border-2 border-white text-white px-8 py-3 text-xl font-medium font-secondary tracking-wider hover:bg-white hover:text-black transition rounded-none">
                   ENQUIRY NOW
-                </button>
+                </NavLink>
               </li>
             </ul>
           </div>

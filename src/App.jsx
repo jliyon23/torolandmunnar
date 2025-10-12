@@ -8,6 +8,7 @@ import Stay from './pages/Stay'
 import Contact from './pages/Contact'
 import Blogs from './pages/Blogs'
 import Activities from './pages/Activities'
+import EnquiryPage from './pages/EnquiryPage'
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
         <Route path='/contact' element={<Contact />} />
         <Route path='/blogs' element={<Blogs />} />
         <Route path='/activities' element={<Activities />} />
+        <Route path='/enquire' element={<EnquiryPage />} />
       </Routes>
     </>
   )
