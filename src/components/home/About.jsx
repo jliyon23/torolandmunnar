@@ -74,7 +74,7 @@ function About() {
           className="flex items-center hover:text-amber-600 transition-colors"
         >
           <Phone className="mr-2" size={16} />
-          <span>+91 1234567890</span>
+          <span>+91 7907167038</span>
         </a>
         <a
           href="mailto:info@torolandmunnar.com"
