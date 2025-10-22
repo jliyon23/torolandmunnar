@@ -10,6 +10,17 @@ import Blogs from './pages/Blogs'
 import Activities from './pages/Activities'
 import EnquiryPage from './pages/EnquiryPage'
 import ScrollToTop from './components/ScrollToTop'
+import ProtectedRoute from './components/ProtectedRoute'
+
+// Admin Pages
+import AdminLogin from './pages/admin/AdminLogin'
+import AdminLayout from './pages/admin/AdminLayout'
+import Dashboard from './pages/admin/Dashboard'
+import ImagesManager from './pages/admin/ImagesManager'
+import GalleryManager from './pages/admin/GalleryManager'
+import HeroSettings from './pages/admin/HeroSettings'
+import BlogsManager from './pages/admin/BlogsManager'
+import EnquiriesManager from './pages/admin/EnquiriesManager'
 
 function App() {
 
@@ -25,6 +36,17 @@ function App() {
         <Route path='/blogs' element={<Blogs />} />
         <Route path='/activities' element={<Activities />} />
         <Route path='/enquire' element={<EnquiryPage />} />
+        
+        {/* Admin Routes */}
+        <Route path='/admin/login' element={<AdminLogin />} />
+        <Route path='/admin' element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+          <Route path='dashboard' element={<Dashboard />} />
+          <Route path='images' element={<ImagesManager />} />
+          <Route path='gallery' element={<GalleryManager />} />
+          <Route path='hero' element={<HeroSettings />} />
+          <Route path='blogs' element={<BlogsManager />} />
+          <Route path='enquiries' element={<EnquiriesManager />} />
+        </Route>
       </Routes>
     </>
   )
