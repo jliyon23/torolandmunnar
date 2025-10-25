@@ -187,7 +187,7 @@ const RoomDetails = () => {
         </div>
 
         {/* Thumbnail Gallery */}
-        {allImages.length > 1 && (
+        {allImages.length > 1 ? (
           <div className="container mx-auto px-4 py-4">
             <div className="flex gap-2 overflow-x-auto">
               {allImages.map((image, index) => (
@@ -205,6 +205,13 @@ const RoomDetails = () => {
                   />
                 </button>
               ))}
+            </div>
+          </div>
+        ) : (
+          <div className="container mx-auto px-4 py-2">
+            <div className="text-center text-gray-500 text-sm">
+              <p>📸 No additional gallery images available</p>
+              <p className="mt-1">Gallery images: {room?.galleryImages?.length || 0} | All images: {allImages.length}</p>
             </div>
           </div>
         )}

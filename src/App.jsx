@@ -27,6 +27,7 @@ import RoomsManager from './pages/admin/RoomsManager'
 import ActivitiesManager from './pages/admin/ActivitiesManager'
 import TestimonialsManager from './pages/admin/TestimonialsManager'
 import TeamManager from './pages/admin/TeamManager'
+import DatabaseDebugger from './pages/admin/DatabaseDebugger'
 
 function App() {
 
@@ -58,6 +59,7 @@ function App() {
           <Route path='activities' element={<ActivitiesManager />} />
           <Route path='testimonials' element={<TestimonialsManager />} />
           <Route path='team' element={<TeamManager />} />
+          <Route path='debug' element={<DatabaseDebugger />} />
         </Route>
       </Routes>
     </>

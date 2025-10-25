@@ -61,7 +61,7 @@ const Footer = () => {
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
                 <FaMapMarkerAlt className="text-secondary mt-1 flex-shrink-0" />
-                <span>Chithirapuram, Munnar, Kerala 685565, India</span>
+                <span>Viripara, Mankulam, Opp Tiger Cave, Munnar</span>
               </li>
               <li className="flex items-center gap-3">
                 <FaPhoneAlt className="text-secondary" />

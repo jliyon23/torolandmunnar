@@ -42,6 +42,14 @@ const Rooms = () => {
   const loadRooms = async () => {
     try {
       const data = await supabaseHelpers.getRooms();
+      console.log('Raw room data from database:', data);
+      
+      // Check what fields are available
+      if (data && data.length > 0) {
+        console.log('First room fields:', Object.keys(data[0]));
+        console.log('First room gallery_images:', data[0].gallery_images);
+      }
+      
       // Only show published rooms and map to correct field names
       const formattedRooms = data
         .filter(room => room.is_published)
@@ -50,10 +58,13 @@ const Rooms = () => {
           title: room.title,
           description: room.description,
           image: room.image,
-          size: room.room_size || 'Spacious',
-          guests: `${room.max_guests || 2} Guests`,
-          bed: room.bed_type || 'Comfortable Bed'
+          size: room.room_size || room.size || 'Spacious',
+          guests: `${room.max_guests || room.max_occupancy || 2} Guests`,
+          bed: room.bed_type || room.bed || 'Comfortable Bed',
+          galleryImages: room.gallery_images || []
         }));
+      
+      console.log('Loaded gallery images:', formattedRooms.map(room => room.galleryImages));
       setRooms(formattedRooms);
       console.log('Rooms loaded:', formattedRooms);
     } catch (error) {

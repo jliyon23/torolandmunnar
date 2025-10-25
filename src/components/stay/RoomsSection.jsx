@@ -18,6 +18,17 @@ const RoomsSection = () => {
       const data = await supabaseHelpers.getRooms();
       console.log('Raw rooms data:', data);
       
+      // Debug: Check what fields are available
+      if (data && data.length > 0) {
+        console.log('Available room fields:', Object.keys(data[0]));
+        console.log('Gallery images in raw data:', data.map(room => ({
+          id: room.id,
+          title: room.title,
+          gallery_images: room.gallery_images,
+          gallery_length: room.gallery_images?.length || 0
+        })));
+      }
+      
       if (!data || data.length === 0) {
         setRoomTypes([]);
         return;
@@ -30,19 +41,24 @@ const RoomsSection = () => {
           name: room.title || 'Room',
           description: room.description || 'A comfortable and luxurious room for your stay.',
           features: [
-            room.bed_type || 'Comfortable Bed',
+            room.bed_type || room.bed || 'Comfortable Bed',
             'Private Bathroom',
             'Scenic Views',
             'Eco-friendly Amenities',
             'Premium Linens'
           ],
-          size: room.room_size || 'Spacious',
-          occupancy: `${room.max_guests || 2} Guests`,
-          price: room.price ? `₹${room.price}` : 'Contact for pricing',
+          size: room.room_size || room.size || 'Spacious',
+          occupancy: `${room.max_guests || room.max_occupancy || 2} Guests`,
+          price: room.price_per_night || room.price ? `₹${room.price_per_night || room.price}` : 'Contact for pricing',
           image: room.image || 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80',
+          galleryImages: room.gallery_images || []
         }));
       
-      console.log('Formatted rooms:', formattedRooms);
+      console.log('Formatted rooms with gallery:', formattedRooms.map(room => ({
+        id: room.id,
+        name: room.name,
+        galleryCount: room.galleryImages?.length || 0
+      })));
       setRoomTypes(formattedRooms);
     } catch (error) {
       console.error('Error loading rooms:', error);

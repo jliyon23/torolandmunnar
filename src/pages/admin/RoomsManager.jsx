@@ -51,6 +51,12 @@ const RoomsManager = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log('Saving room with data:', {
+        ...formData,
+        gallery_images: formData.gallery_images,
+        gallery_count: formData.gallery_images?.length || 0
+      });
+      
       if (editingRoom) {
         await supabaseHelpers.updateRoom(editingRoom.id, formData);
       } else {
@@ -58,7 +64,7 @@ const RoomsManager = () => {
       }
       loadData();
       resetForm();
-      alert('Room saved successfully!');
+      alert(`Room saved successfully! Gallery images: ${formData.gallery_images?.length || 0}`);
     } catch (error) {
       console.error('Error saving room:', error);
       alert('Failed to save room');
@@ -252,26 +258,30 @@ const RoomsManager = () => {
                     <span className="font-medium">Price:</span> {room.price_per_night || 'Contact for pricing'}
                   </div>
                 </div>
-                {room.gallery_images && room.gallery_images.length > 0 && (
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-600 mb-2">Gallery Images: {room.gallery_images.length}</p>
-                    <div className="flex gap-2">
-                      {room.gallery_images.slice(0, 3).map((img, index) => (
-                        <img
-                          key={index}
-                          src={img}
-                          alt={`Gallery ${index + 1}`}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                      ))}
-                      {room.gallery_images.length > 3 && (
-                        <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-600">
-                          +{room.gallery_images.length - 3}
-                        </div>
-                      )}
+                <div className="mt-4">
+                  {room.gallery_images && room.gallery_images.length > 0 ? (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-2">Gallery Images: {room.gallery_images.length}</p>
+                      <div className="flex gap-2">
+                        {room.gallery_images.slice(0, 3).map((img, index) => (
+                          <img
+                            key={index}
+                            src={img}
+                            alt={`Gallery ${index + 1}`}
+                            className="w-16 h-16 object-cover rounded"
+                          />
+                        ))}
+                        {room.gallery_images.length > 3 && (
+                          <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-600">
+                            +{room.gallery_images.length - 3}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <p className="text-xs text-gray-500">📸 No gallery images</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -642,20 +652,31 @@ const RoomsManager = () => {
               </button>
             </div>
             <div className="p-6">
-              <div className="grid grid-cols-3 gap-4">
-                {allImages.map((image) => (
-                  <div
-                    key={image.id}
-                    onClick={() => selectImage(image)}
-                    className="cursor-pointer group relative border-2 border-transparent hover:border-blue-500 transition"
-                  >
-                    <img src={image.url} alt={image.name} className="w-full h-40 object-cover" />
-                    <div className="absolute inset-0 bg-blue-600 bg-opacity-0 group-hover:bg-opacity-10 transition flex items-center justify-center">
-                      <span className="text-white opacity-0 group-hover:opacity-100 font-medium">Select</span>
+              {allImages.length > 0 ? (
+                <div className="grid grid-cols-3 gap-4">
+                  {allImages.map((image) => (
+                    <div
+                      key={image.id}
+                      onClick={() => selectImage(image)}
+                      className="cursor-pointer group relative border-2 border-transparent hover:border-blue-500 transition"
+                    >
+                      <img src={image.url} alt={image.name} className="w-full h-40 object-cover" />
+                      <div className="absolute inset-0 bg-blue-600 bg-opacity-0 group-hover:bg-opacity-10 transition flex items-center justify-center">
+                        <span className="text-white opacity-0 group-hover:opacity-100 font-medium">Select</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 002 2z" />
+                  </svg>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No Images Available</h3>
+                  <p className="text-gray-500 mb-4">Please upload some images to the gallery first.</p>
+                  <p className="text-sm text-gray-400">Go to Images Manager to upload images.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
