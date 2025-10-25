@@ -1,14 +1,18 @@
 # Toroland Munnar - Admin Panel Setup Guide
 
 ## Overview
-This admin panel allows you to manage all aspects of your Toroland Munnar website including images, gallery, hero settings, blogs, and enquiries.
+This admin panel allows you to manage all aspects of your Toroland Munnar website including images, gallery, hero settings, blogs, enquiries, rooms, activities, testimonials, and team members.
 
 ## Features
 - ✅ Image Management with Cloudinary
 - ✅ Gallery Management
-- ✅ Hero Section Settings (Video/Image Carousel)
+- ✅ Hero Section Settings (Video/Image Carousel with Upload)
 - ✅ Blog Creation & Management
 - ✅ Enquiry Management
+- ✅ Rooms Management
+- ✅ Activities & Experiences Management
+- ✅ Testimonials Management
+- ✅ Team Members Management
 - ✅ Clean, Modern Admin UI
 
 ## Prerequisites
@@ -26,6 +30,10 @@ This admin panel allows you to manage all aspects of your Toroland Munnar websit
 3. Get your project URL and anon key from Settings > API
 
 #### Create Database Tables
+
+**IMPORTANT:** For the complete database schema including rooms, activities, testimonials, and team members, run the SQL commands from `ADMIN_DATABASE_EXTENDED.sql` file.
+
+You can also run the original setup SQL below, then add the extended tables separately:
 
 Run these SQL commands in your Supabase SQL Editor:
 
@@ -89,6 +97,53 @@ CREATE TABLE enquiries (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Rooms table
+CREATE TABLE rooms (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  price DECIMAL(10, 2) NOT NULL,
+  max_guests INTEGER NOT NULL,
+  amenities TEXT,
+  images JSONB DEFAULT '[]'::jsonb,
+  published BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Activities table
+CREATE TABLE activities (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  price DECIMAL(10, 2),
+  duration INTEGER, -- in minutes
+  category TEXT,
+  images JSONB DEFAULT '[]'::jsonb,
+  published BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Testimonials table
+CREATE TABLE testimonials (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  content TEXT NOT NULL,
+  rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Team Members table
+CREATE TABLE team_members (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  position TEXT,
+  bio TEXT,
+  photo TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Insert default hero settings
 INSERT INTO hero_settings (id, type, video_url, images)
 VALUES (1, 'video', '/video/bg.mp4', '[]'::jsonb)
@@ -100,6 +155,10 @@ ALTER TABLE gallery ENABLE ROW LEVEL SECURITY;
 ALTER TABLE hero_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blogs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE enquiries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE rooms ENABLE ROW LEVEL SECURITY;
+ALTER TABLE activities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
 
 -- Create policies for authenticated users (admin)
 CREATE POLICY "Allow all for authenticated users" ON images
@@ -115,6 +174,18 @@ CREATE POLICY "Allow all for authenticated users" ON blogs
   FOR ALL USING (auth.role() = 'authenticated');
 
 CREATE POLICY "Allow all for authenticated users" ON enquiries
+  FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow all for authenticated users" ON rooms
+  FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow all for authenticated users" ON activities
+  FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow all for authenticated users" ON testimonials
+  FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow all for authenticated users" ON team_members
   FOR ALL USING (auth.role() = 'authenticated');
 
 -- Allow public read access to blogs and hero settings
@@ -212,6 +283,31 @@ npm run dev
 - Update enquiry status
 - View full enquiry details
 - Delete enquiries
+
+### Rooms Manager
+- Add new rooms
+- Edit room details
+- Upload room images
+- Manage room availability and pricing
+- Delete rooms
+
+### Activities Manager
+- Add new activities
+- Edit activity details
+- Upload activity images
+- Manage activity categories and pricing
+- Delete activities
+
+### Testimonials Manager
+- Add new testimonials
+- Edit existing testimonials
+- Delete testimonials
+
+### Team Members Manager
+- Add new team members
+- Edit team member details
+- Upload team member photos
+- Delete team members
 
 ## Security Notes
 

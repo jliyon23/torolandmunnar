@@ -72,6 +72,16 @@ export const supabaseHelpers = {
     if (error) throw error;
   },
 
+  async getBlogById(id) {
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error) throw error;
+    return data;
+  },
+
   // Hero Settings
   async getHeroSettings() {
     const { data, error } = await supabase
@@ -150,6 +160,164 @@ export const supabaseHelpers = {
   async deleteEnquiry(id) {
     const { error } = await supabase
       .from('enquiries')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  // Rooms
+  async getRooms() {
+    const { data, error } = await supabase
+      .from('rooms')
+      .select('*')
+      .order('display_order', { ascending: true });
+    if (error) throw error;
+    return data;
+  },
+
+  async createRoom(roomData) {
+    const { data, error } = await supabase
+      .from('rooms')
+      .insert([roomData])
+      .select();
+    if (error) throw error;
+    return data[0];
+  },
+
+  async updateRoom(id, roomData) {
+    const { data, error } = await supabase
+      .from('rooms')
+      .update(roomData)
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data[0];
+  },
+
+  async deleteRoom(id) {
+    const { error } = await supabase
+      .from('rooms')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  async getRoomById(id) {
+    const { data, error } = await supabase
+      .from('rooms')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error) throw error;
+    return data;
+  },
+
+  // Activities
+  async getActivities() {
+    const { data, error } = await supabase
+      .from('activities')
+      .select('*')
+      .order('display_order', { ascending: true });
+    if (error) throw error;
+    return data;
+  },
+
+  async createActivity(activityData) {
+    const { data, error } = await supabase
+      .from('activities')
+      .insert([activityData])
+      .select();
+    if (error) throw error;
+    return data[0];
+  },
+
+  async updateActivity(id, activityData) {
+    const { data, error } = await supabase
+      .from('activities')
+      .update(activityData)
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data[0];
+  },
+
+  async deleteActivity(id) {
+    const { error } = await supabase
+      .from('activities')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  // Testimonials
+  async getTestimonials() {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('*')
+      .order('display_order', { ascending: true });
+    if (error) throw error;
+    return data;
+  },
+
+  async createTestimonial(testimonialData) {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .insert([testimonialData])
+      .select();
+    if (error) throw error;
+    return data[0];
+  },
+
+  async updateTestimonial(id, testimonialData) {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .update(testimonialData)
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data[0];
+  },
+
+  async deleteTestimonial(id) {
+    const { error } = await supabase
+      .from('testimonials')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  // Team Members
+  async getTeamMembers() {
+    const { data, error } = await supabase
+      .from('team_members')
+      .select('*')
+      .order('display_order', { ascending: true });
+    if (error) throw error;
+    return data;
+  },
+
+  async createTeamMember(memberData) {
+    const { data, error } = await supabase
+      .from('team_members')
+      .insert([memberData])
+      .select();
+    if (error) throw error;
+    return data[0];
+  },
+
+  async updateTeamMember(id, memberData) {
+    const { data, error } = await supabase
+      .from('team_members')
+      .update(memberData)
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return data[0];
+  },
+
+  async deleteTeamMember(id) {
+    const { error } = await supabase
+      .from('team_members')
       .delete()
       .eq('id', id);
     if (error) throw error;

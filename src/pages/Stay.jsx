@@ -14,7 +14,7 @@ const Stay = () => {
       <StayHero />
       <IntroSection />
       <RoomsSection />
-      <AmenitiesSection />
+      {/* <AmenitiesSection /> */}
       <SustainabilitySection />
       <BookingCTA />
       <Footer />

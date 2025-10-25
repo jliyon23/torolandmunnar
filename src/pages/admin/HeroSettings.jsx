@@ -1,15 +1,153 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { supabaseHelpers } from '../../config/supabase';
+import { uploadToCloudinary } from '../../config/cloudinary';
+
+// Video Upload Component
+const VideoUpload = ({ onVideoUploaded, currentVideoUrl }) => {
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const onDrop = useCallback(async (acceptedFiles) => {
+    const file = acceptedFiles[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('video/')) {
+      alert('Please upload a video file');
+      return;
+    }
+
+    // Validate file size (max 100MB)
+    if (file.size > 100 * 1024 * 1024) {
+      alert('Video file size must be less than 100MB');
+      return;
+    }
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      // Simulate progress
+      const progressInterval = setInterval(() => {
+        setUploadProgress((prev) => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 500);
+
+      // Upload to Cloudinary
+      const result = await uploadToCloudinary(file, 'video');
+      
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      
+      // Call the callback with the video URL
+      onVideoUploaded(result.secure_url);
+      
+      setTimeout(() => {
+        setUploading(false);
+        setUploadProgress(0);
+      }, 1000);
+    } catch (error) {
+      console.error('Video upload error:', error);
+      alert('Failed to upload video: ' + error.message);
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  }, [onVideoUploaded]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { 'video/*': ['.mp4', '.mov', '.avi', '.webm'] },
+    maxFiles: 1,
+    disabled: uploading,
+  });
+
+  return (
+    <div>
+      {currentVideoUrl && !uploading && (
+        <div className="mb-3">
+          <video
+            src={currentVideoUrl}
+            controls
+            className="w-full max-h-64 bg-black"
+          />
+        </div>
+      )}
+      
+      <div
+        {...getRootProps()}
+        className={`border-2 border-dashed p-6 text-center transition-all cursor-pointer ${
+          isDragActive
+            ? 'border-blue-500 bg-blue-50'
+            : uploading
+            ? 'border-gray-300 bg-gray-50 cursor-not-allowed'
+            : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
+        }`}
+      >
+        <input {...getInputProps()} />
+        
+        {uploading ? (
+          <div>
+            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+            <p className="text-gray-600 font-medium mb-2">Uploading video...</p>
+            <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+              <div
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
+            </div>
+            <p className="text-sm text-gray-500">{uploadProgress}%</p>
+          </div>
+        ) : (
+          <>
+            <svg
+              className="w-12 h-12 text-gray-400 mx-auto mb-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              />
+            </svg>
+            {isDragActive ? (
+              <p className="text-blue-600 font-medium">Drop the video here</p>
+            ) : (
+              <>
+                <p className="text-gray-600 font-medium mb-1">
+                  Drag & drop a video, or click to select
+                </p>
+                <p className="text-sm text-gray-500">
+                  MP4, MOV, AVI, WEBM (max 100MB)
+                </p>
+              </>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const HeroSettings = () => {
   const [settings, setSettings] = useState({
     type: 'video', // 'video' or 'image'
     video_url: '',
+    video_cloudinary_url: '',
     images: [],
   });
   const [allImages, setAllImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingVideo, setIsUploadingVideo] = useState(false);
   const [showImageSelector, setShowImageSelector] = useState(false);
 
   useEffect(() => {
@@ -129,8 +267,16 @@ const HeroSettings = () => {
               placeholder="https://example.com/video.mp4 or /video/bg.mp4"
             />
             <p className="text-sm text-gray-500 mt-2">
-              Enter the URL of your hero video (MP4 format recommended)
+              Enter the URL of your hero video (MP4 format recommended) or upload a new video below
             </p>
+            
+            {/* Video Upload Section */}
+            <div className="mt-4">
+              <VideoUpload
+                onVideoUploaded={(url) => setSettings({ ...settings, video_url: url })}
+                currentVideoUrl={settings.video_url}
+              />
+            </div>
           </div>
         )}
 

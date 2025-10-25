@@ -1,12 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabaseHelpers } from "../../config/supabase";
 
 export default function Hero() {
-  const [isVideo, setIsVideo] = useState(true);
+  const [heroSettings, setHeroSettings] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadHeroSettings();
+  }, []);
+
+  const loadHeroSettings = async () => {
+    try {
+      const settings = await supabaseHelpers.getHeroSettings();
+      setHeroSettings(settings);
+    } catch (error) {
+      console.error('Error loading hero settings:', error);
+      // Fallback to default
+      setHeroSettings({
+        type: 'video',
+        video_url: 'https://res.cloudinary.com/dlgdmu6gq/video/upload/v1755532928/wedsite_zqa7ym.webm',
+        images: []
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Auto-rotate carousel images
+  useEffect(() => {
+    if (heroSettings?.type === 'image' && heroSettings?.images?.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % heroSettings.images.length);
+      }, 5000); // Change image every 5 seconds
+      return () => clearInterval(interval);
+    }
+  }, [heroSettings]);
+
+  if (loading) {
+    return (
+      <section className="relative w-full h-screen overflow-hidden bg-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative w-full h-screen overflow-hidden">
       {/* Background */}
-      {isVideo ? (
+      {heroSettings?.type === 'video' ? (
         <video
           autoPlay
           loop
@@ -14,11 +56,24 @@ export default function Hero() {
           className="absolute top-0 left-0 w-full h-full object-cover"
         >
           <source
-            src="https://res.cloudinary.com/dlgdmu6gq/video/upload/v1755532928/wedsite_zqa7ym.webm"
+            src={heroSettings.video_url || 'https://res.cloudinary.com/dlgdmu6gq/video/upload/v1755532928/wedsite_zqa7ym.webm'}
             type="video/mp4"
           />
           Your browser does not support the video tag.
         </video>
+      ) : heroSettings?.images && heroSettings.images.length > 0 ? (
+        <>
+          {heroSettings.images.map((imageUrl, index) => (
+            <img
+              key={index}
+              src={imageUrl}
+              alt={`Toroland Hero ${index + 1}`}
+              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ))}
+        </>
       ) : (
         <img
           src="https://res.cloudinary.com/dlgdmu6gq/image/upload/v1756795607/5_uvx5wt.jpg"

@@ -85,7 +85,7 @@ The admin panel uses a clean, modern design with a **blue gradient theme** that'
 ┌─────────────────────────────────────────────────────┐
 │ Images Manager                                      │
 │ Upload and manage your images                       │
-├─────────────────────────────────────────────────────┤
+├────────────────────────────────────────────────
 │ Upload New Images                                   │
 │ ┌───────────────────────────────────────────────┐   │
 │ │                                                │   │

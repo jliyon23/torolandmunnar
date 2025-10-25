@@ -1,48 +1,28 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
-
-// --- Mock Data: (No changes) ---
-const blogPostsData = [
-  {
-    id: "a-day-in-the-western-ghats",
-    title: "A Day in the Western Ghats: A Hiker's Journal",
-    category: "Adventure",
-    date: "September 18, 2025",
-    excerpt: "Join us on a trek through misty trails as we uncover the hidden waterfalls and breathtaking vistas of Munnar.",
-    imageUrl: "https://res.cloudinary.com/dlgdmu6gq/image/upload/w_800,ar_4:3,c_fill,g_auto,f_auto,q_auto/v1756912996/local_amenities_1_klaedb.jpg"
-  },
-  {
-    id: "the-art-of-local-keralan-cuisine",
-    title: "The Art of Local Keralan Cuisine",
-    category: "Culture",
-    date: "September 15, 2025",
-    excerpt: "Discover the secrets behind the region's most flavorful dishes, from sourcing spices to traditional cooking methods.",
-    imageUrl: "https://res.cloudinary.com/dlgdmu6gq/image/upload/w_800,ar_4:3,c_fill,g_auto,f_auto,q_auto/v1756913001/local_amenities_3_bymxit.jpg"
-  },
-  {
-    id: "finding-serenity-in-the-hills",
-    title: "Finding Serenity: A Guide to Mindfulness in the Hills",
-    category: "Wellness",
-    date: "September 12, 2025",
-    excerpt: "Learn how the tranquil environment of Munnar can be the perfect backdrop for your wellness and meditation journey.",
-    imageUrl: "https://res.cloudinary.com/dlgdmu6gq/image/upload/w_800,ar_4:3,c_fill,g_auto,f_auto,q_auto/v1756913006/local_amenities_2_pdbzpz.jpg"
-  }
-];
+import { supabaseHelpers } from "../../config/supabase";
 
 // --- Custom Hook: (No changes) ---
-const useOnScreen = (ref, threshold = 0.2) => {
-  const [isIntersecting, setIntersecting] = useState(false);
+const useOnScreen = (ref, threshold = 0.1) => {
+  const [isIntersecting, setIntersecting] = useState(true); // Start as TRUE
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => setIntersecting(entry.isIntersecting),
-      { threshold }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIntersecting(true);
+        }
+      },
+      { threshold, rootMargin: '100px' }
     );
     const currentRef = ref.current;
-    if (currentRef) observer.observe(currentRef);
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
+    if (currentRef) {
+      observer.observe(currentRef);
+      return () => {
+        if (currentRef) observer.unobserve(currentRef);
+      };
+    }
   }, [ref, threshold]);
 
   return isIntersecting;
@@ -52,6 +32,42 @@ const useOnScreen = (ref, threshold = 0.2) => {
 const BlogSection = () => {
   const sectionRef = useRef(null);
   const isVisible = useOnScreen(sectionRef);
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadBlogs();
+  }, []);
+
+  const loadBlogs = async () => {
+    try {
+      const data = await supabaseHelpers.getBlogs();
+      // Only show published blogs, limit to 3 most recent
+      const publishedBlogs = data
+        .filter(blog => blog.published)
+        .slice(0, 3);
+      setBlogs(publishedBlogs);
+    } catch (error) {
+      console.error('Error loading blogs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
+  if (loading) {
+    return (
+      <section className="py-24 bg-background">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section ref={sectionRef} id="blog" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-background">
@@ -77,12 +93,15 @@ const BlogSection = () => {
 
         {/* Blog Posts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPostsData.map((post, index) => (
-            // ====== NEW CARD DESIGN ======
-            // NOTE: Replace <a> with your router's <Link> component if needed
-            <a
+          {blogs.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <p className="text-main-text/80 font-secondary">No blog posts available at the moment.</p>
+            </div>
+          ) : (
+            blogs.map((post, index) => (
+            <Link
               key={post.id}
-              href={`/blog/${post.id}`}
+              to={`/blog/${post.id}`}
               className={`group block bg-light shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
                 isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`}
@@ -90,7 +109,7 @@ const BlogSection = () => {
             >
               <div className="overflow-hidden">
                 <img
-                  src={post.imageUrl}
+                  src={post.featured_image || 'https://via.placeholder.com/800x600'}
                   alt={post.title}
                   className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105"
                 />
@@ -98,32 +117,33 @@ const BlogSection = () => {
 
               <div className="p-6 flex flex-col flex-grow">
                 <p className="font-secondary text-secondary text-xs tracking-widest uppercase mb-2">
-                  {post.category}
+                  {post.tags || 'Blog'}
                 </p>
                 <h3 className="text-xl font-primary text-primary mb-3 transition-colors duration-300 group-hover:text-secondary flex-grow">
                   {post.title}
                 </h3>
                 <p className="text-main-text/80 font-secondary text-sm leading-relaxed mb-4">
-                  {post.excerpt}
+                  {post.excerpt || post.content.substring(0, 150) + '...'}
                 </p>
                 <div className="mt-auto font-secondary text-secondary text-sm font-semibold flex items-center gap-2">
                   Read More
                   <FaArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
                 </div>
               </div>
-            </a>
-          ))}
+            </Link>
+          ))
+          )}
         </div>
 
-        {/* View More Button (No changes) */}
+        {/* View More Button */}
         <div className={`flex justify-center mt-20 transition-all duration-700 delay-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          <a 
-            href="/blogs"
+          <Link 
+            to="/blogs"
             className="inline-flex items-center gap-3 font-secondary text-secondary border-2 border-secondary py-3 px-8 uppercase text-sm tracking-widest transition-all duration-300 hover:bg-secondary hover:text-light focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 focus:ring-offset-light"
           >
             View All Posts
             <FaArrowRight />
-          </a>
+          </Link>
         </div>
 
       </div>

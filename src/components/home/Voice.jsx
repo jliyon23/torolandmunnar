@@ -1,40 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FaQuoteLeft, FaStar, FaAward, FaUsers } from "react-icons/fa";
-
-// --- Data for Testimonials ---
-const testimonialsData = [
-  {
-    quote: "The place is very peaceful, clean and close to nature. Staff are friendly and the food is really tasty.",
-    author: "Ramesh Kumar",
-    source: "MakeMyTrip",
-    rating: 5
-  },
-  {
-    quote: "Great staff and awesome breakfast. Loved the trekking around the hotel — an amazing experience overall.",
-    author: "Emily Davis",
-    source: "Agoda",
-    rating: 5
-  },
-  {
-    quote: "Unique cave-style rooms, clean and cozy. The location is fantastic, surrounded by greenery and hills.",
-    author: "Shreya Menon",
-    source: "Booking.com",
-    rating: 4
-  },
-  {
-    quote: "Amazing experience. Hospitality is excellent, rooms are neat, and the natural beauty around is breathtaking.",
-    author: "John Matthew",
-    source: "TripAdvisor",
-    rating: 5
-  },
-  {
-    quote: "Perfect place for a weekend getaway. Peaceful, eco-friendly and away from the city noise. Totally loved it.",
-    author: "Nikhil Raj",
-    source: "Goibibo",
-    rating: 5
-  }
-];
-
+import { supabaseHelpers } from "../../config/supabase";
 
 // --- Data for Social Proof ---
 const socialProofData = [
@@ -56,19 +22,25 @@ const socialProofData = [
 ]
 
 // --- Custom Hook for Intersection Observer ---
-const useOnScreen = (ref, threshold = 0.2) => {
-  const [isIntersecting, setIntersecting] = useState(false);
+const useOnScreen = (ref, threshold = 0.1) => {
+  const [isIntersecting, setIntersecting] = useState(true); // Start as TRUE
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => setIntersecting(entry.isIntersecting),
-      { threshold }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIntersecting(true);
+        }
+      },
+      { threshold, rootMargin: '100px' }
     );
     const currentRef = ref.current;
-    if (currentRef) observer.observe(currentRef);
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
+    if (currentRef) {
+      observer.observe(currentRef);
+      return () => {
+        if (currentRef) observer.unobserve(currentRef);
+      };
+    }
   }, [ref, threshold]);
 
   return isIntersecting;
@@ -78,6 +50,34 @@ const useOnScreen = (ref, threshold = 0.2) => {
 const Testimonials = () => {
   const sectionRef = useRef(null);
   const isVisible = useOnScreen(sectionRef);
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadTestimonials();
+  }, []);
+
+  const loadTestimonials = async () => {
+    try {
+      const data = await supabaseHelpers.getTestimonials();
+      // Only show published testimonials
+      setTestimonials(data.filter(t => t.is_published));
+    } catch (error) {
+      console.error('Error loading testimonials:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className="py-24 bg-light">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section ref={sectionRef} id="testimonials" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-light">
@@ -115,9 +115,14 @@ const Testimonials = () => {
 
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {testimonialsData.map((testimonial, index) => (
+          {testimonials.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <p className="text-main-text/80 font-secondary">No testimonials available at the moment.</p>
+            </div>
+          ) : (
+            testimonials.map((testimonial, index) => (
             <div
-              key={index}
+              key={testimonial.id}
               className={`bg-background p-8 shadow-lg flex flex-col transition-all duration-500 transform hover:shadow-2xl hover:-translate-y-2 ${
                 isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`}
@@ -143,7 +148,8 @@ const Testimonials = () => {
                 </div>
               </div>
             </div>
-          ))}
+          ))
+          )}
         </div>
       </div>
     </section>

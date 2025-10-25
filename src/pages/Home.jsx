@@ -1,3 +1,4 @@
+import DebugPanel from "../components/DebugPanel"
 import About from "../components/home/About"
 import Activities from "../components/home/Activities"
 import BlogSection from "../components/home/BlogSection"
@@ -24,6 +25,8 @@ function Home() {
             <Voice />
             <Newsletter />
             <Footer />
+
+            {/* <DebugPanel /> */}
         </div>
     )
 }

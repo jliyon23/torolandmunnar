@@ -1,21 +1,39 @@
 import { useState, useRef, useEffect } from "react";
 import { MapPin, Phone, Mail, ChevronLeft, ChevronRight } from "lucide-react";
 import logo from '../../assets/logo/logo.png';
-
-// Import the data and utility function from their new homes
-import { aboutGalleryImages } from '../../data/imageData';
+import { supabaseHelpers } from '../../config/supabase';
 import { optimizeCloudinaryImage } from '../../utils/cloudinary';
 
 function About() {
-  // Define transformations and generate the final image list
-  const imageTransformations = "w_1000,ar_9:16,c_fill,f_auto,q_auto:good";
-  const galleryImages = aboutGalleryImages.map(url => 
-    optimizeCloudinaryImage(url, imageTransformations)
-  );
-
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
+
+  // Fetch gallery images from Supabase
+  useEffect(() => {
+    loadGalleryImages();
+  }, []);
+
+  const loadGalleryImages = async () => {
+    try {
+      const data = await supabaseHelpers.getGalleryImages();
+      // Filter for published images and optimize URLs
+      // const imageTransformations = "w_1000,ar_9:16,c_fill,f_auto,q_auto:good";
+      // const optimizedImages = data
+      //   .filter(img => img.is_published)
+      //   .map(img => optimizeCloudinaryImage(img.image_url, imageTransformations));
+      setGalleryImages(data);
+      console.log('Loaded gallery images:', data); // Debug log
+    } catch (error) {
+      console.error('Error loading gallery images:', error);
+      // Fallback to empty array or you could use static images
+      setGalleryImages([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const checkArrows = () => {
     if (scrollContainerRef.current) {
@@ -33,7 +51,7 @@ function About() {
       clearTimeout(timer);
       window.removeEventListener('resize', checkArrows);
     };
-  }, []);
+  }, [galleryImages]); // Added dependency
 
   const handleScroll = (direction) => {
     if (scrollContainerRef.current) {
@@ -103,41 +121,53 @@ function About() {
 
       {/* 2. FULL-WIDTH CONTAINER FOR THE GALLERY */}
       <div className="w-full relative">
-        {showLeftArrow && (
-          <button
-            onClick={() => handleScroll('left')}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/60 hover:bg-white/90 backdrop-blur-sm rounded-full p-3 transition-all duration-300"
-          >
-            <ChevronLeft size={28} className="text-gray-800" />
-          </button>
-        )}
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+          </div>
+        ) : galleryImages.length === 0 ? (
+          <div className="flex justify-center items-center py-20 text-gray-500">
+            <p>No gallery images available</p>
+          </div>
+        ) : (
+          <>
+            {showLeftArrow && (
+              <button
+                onClick={() => handleScroll('left')}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/60 hover:bg-white/90 backdrop-blur-sm rounded-full p-3 transition-all duration-300"
+              >
+                <ChevronLeft size={28} className="text-gray-800" />
+              </button>
+            )}
 
-        <div
-          ref={scrollContainerRef}
-          onScroll={checkArrows}
-          className="flex space-x-6 overflow-x-scroll no-scrollbar snap-x snap-mandatory scroll-smooth px-4 sm:px-8"
-        >
-          {galleryImages.map((image, index) => (
             <div
-              key={index}
-              className="flex-shrink-0 w-[80vw] sm:w-[60vw] md:w-[45vw] lg:w-[30vw] aspect-[9/16] overflow-hidden snap-center "
+              ref={scrollContainerRef}
+              onScroll={checkArrows}
+              className="flex space-x-6 overflow-x-scroll no-scrollbar snap-x snap-mandatory scroll-smooth px-4 sm:px-8"
             >
-              <img
-                src={image}
-                alt={`Gallery image ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
+              {galleryImages.map((image, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 w-[80vw] sm:w-[60vw] md:w-[45vw] lg:w-[25vw] aspect-[9/16] overflow-hidden snap-center "
+                >
+                  <img
+                    src={image.image_url}
+                    alt={`Gallery image ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {showRightArrow && (
-          <button
-            onClick={() => handleScroll('right')}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/60 hover:bg-white/90 backdrop-blur-sm rounded-full p-3 transition-all duration-300"
-          >
-            <ChevronRight size={28} className="text-gray-800" />
-          </button>
+            {showRightArrow && (
+              <button
+                onClick={() => handleScroll('right')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/60 hover:bg-white/90 backdrop-blur-sm rounded-full p-3 transition-all duration-300"
+              >
+                <ChevronRight size={28} className="text-gray-800" />
+              </button>
+            )}
+          </>
         )}
       </div>
 

@@ -1,50 +1,77 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight, Ruler, Users, BedDouble } from "lucide-react";
-
-// --- Data ---
-const roomData = [
-  {
-    title: "Cave Suite",
-    description: "The suite features air conditioning, soundproof walls, a balcony with mountain views as well as a private bathroom boasting a shower. The unit has 1 bed.",
-    size: "50 m²",
-    guests: "2 Guests",
-    bed: "1 Large Double Bed",
-    image: "https://res.cloudinary.com/dlgdmu6gq/image/upload/w_800,ar_4:3,c_fill,f_auto,q_auto/v1756798653/_DSC2821_1_mtwrwr.jpg"
-  },
-  {
-    title: "Thatch Suite",
-    description: "The air-conditioned suite features 1 bedroom and 1 bathroom with a shower and a hairdryer. The suite has soundproof walls, a minibar, a wardrobe as well as a balcony with mountain views. The unit offers 1 bed.",
-    size: "48 m²",
-    guests: "2 Guests",
-    bed: "1 Large Double Bed",
-    image: "https://res.cloudinary.com/dlgdmu6gq/image/upload/w_800,ar_4:3,c_fill,f_auto,q_auto/v1756795607/5_uvx5wt.jpg"
-  },
- 
-];
+import { supabaseHelpers } from "../../config/supabase";
 
 // --- Custom Hook for Intersection Observer ---
-const useOnScreen = (ref, threshold = 0.2) => {
-  const [isIntersecting, setIntersecting] = useState(false);
+const useOnScreen = (ref, threshold = 0.1) => {
+  const [isIntersecting, setIntersecting] = useState(true); // Start as TRUE
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => setIntersecting(entry.isIntersecting),
-      { threshold }
+      ([entry]) => {
+        // Once visible, keep it visible (don't revert to false)
+        if (entry.isIntersecting) {
+          setIntersecting(true);
+        }
+      },
+      { threshold, rootMargin: '100px' }
     );
     const currentRef = ref.current;
-    if (currentRef) observer.observe(currentRef);
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
+    if (currentRef) {
+      observer.observe(currentRef);
+      return () => {
+        if (currentRef) observer.unobserve(currentRef);
+      };
+    }
   }, [ref, threshold]);
 
   return isIntersecting;
 };
 
 const Rooms = () => {
-  // MODIFIED: Added ref and hook for animations
   const sectionRef = useRef(null);
   const isVisible = useOnScreen(sectionRef);
+  const [rooms, setRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadRooms();
+  }, []);
+
+  const loadRooms = async () => {
+    try {
+      const data = await supabaseHelpers.getRooms();
+      // Only show published rooms and map to correct field names
+      const formattedRooms = data
+        .filter(room => room.is_published)
+        .map(room => ({
+          id: room.id,
+          title: room.title,
+          description: room.description,
+          image: room.image,
+          size: room.room_size || 'Spacious',
+          guests: `${room.max_guests || 2} Guests`,
+          bed: room.bed_type || 'Comfortable Bed'
+        }));
+      setRooms(formattedRooms);
+      console.log('Rooms loaded:', formattedRooms);
+    } catch (error) {
+      console.error('Error loading rooms:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-background">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     // MODIFIED: Attached ref to the section
@@ -72,7 +99,12 @@ const Rooms = () => {
 
         {/* Rooms Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2  gap-8">
-          {roomData.map((room, index) => (
+          {rooms.length === 0 ? (
+            <div className="col-span-2 text-center py-12">
+              <p className="text-main-text/70 font-secondary">No rooms available at the moment.</p>
+            </div>
+          ) : (
+            rooms.map((room, index) => (
             // MODIFIED: Added transition classes and staggered delay style
             <div 
               key={index} 
@@ -111,13 +143,14 @@ const Rooms = () => {
                   {room.description}
                 </p>
 
-                <a href="#" className="font-secondary text-secondary font-semibold inline-flex items-center group/link">
+                <Link to={`/room/${room.id}`} className="font-secondary text-secondary font-semibold inline-flex items-center group/link">
                   Discover More
                   <ArrowRight className="ml-2 w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                </a>
+                </Link>
               </div>
             </div>
-          ))}
+          ))
+          )}
         </div>
       </div>
     </section>
